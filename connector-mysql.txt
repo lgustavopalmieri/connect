@@ -1,0 +1,55 @@
+### www.confluent.io/hub/
+
+### https://debezium.io/documentation/reference/stable/connectors/mysql.html
+
+O kafka connect não serve para modificações muito complexas
+
+1-http://localhost:9021/
+
+docker exec -it kafka-connect_mysql_1 bash
+
+mysql -uroot -p fullcycle
+password: root
+
+show tables;
+
+create table categories (id int auto_increment primary key, name varchar(255));
+
+show tables;
+desc categories;
+
+Insert into categories (name) values('Eletronicos');
+
+select * from categories;
+
+
+name=mysql-connector ### nome que damos par ao connector ### 
+connector.class=io.debezium.connector.mysql.MySqlConnector ### endereço do connector
+tasks.max=1 ### máximo de tarefas
+
+database.user=root
+database.password=root
+database.hostname=mysql
+database.port=3306
+database.server.name=mysql-server ### nome que damos para o server
+
+database.history.kafka.bootstrap.servers=kafka:9092
+database.history.kafka.topic=mysql_history ### onde ele grava os items
+
+
+### esse é um connector source ###
+
+degraded mostra erros
+
+
+Em topics => mysql-server.fullcycle.categories => messages => Jump to offset 0 / Partition: 0
+
+ao lado esquerdo temos várias informações exibidas, dentre elas o PAYLOAD 
+
+-before
+-after
+
+
+Insert into categories (name) values('Cozinha');
+
+irá aparecer no log do control center
