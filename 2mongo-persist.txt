@@ -1,0 +1,48 @@
+### www.confluent.io/hub/
+
+### https://debezium.io/documentation/reference/stable/connectors/mongodb.html
+
+Connector sink que pega do mysql e joga no mongo
+
+name=mongo-sink-from-mysql
+connector.class=com.mongodb.kafka.connect.MongoSinkConnector
+task.max=1
+
+topics=mysql-server.fullcycle.categories ### aqui precisamos passar o nome do server que está o mysql 
+
+connection.uri=mongodb://root:root@mongodb/
+database=fullcycle
+
+
+### no control center
+
+connect => connect default => add connector =>  trazer o mongodb.properties => launch
+
+http://localhost:8085/ mongo express vai ter o database fullcycle there 
+
+se entrarmos para ver o que tem, o connect já trouxe para o mongodb o que foi criado no mysql. porém ele trás um json com muitas informações desnecessárias.
+
+nós temos o smt - single message transformation
+
+### DOCS
+https://docs.confluent.io/platform/current/connect/transforms/overview.html
+
+### ARTIGO
+https://www.confluent.io/blog/kafka-connect-single-message-transformation-tutorial-with-examples/?utm_medium=sem&utm_source=google&utm_campaign=ch.sem_br.nonbrand_tp.prs_tgt.dsa_mt.dsa_rgn.latam_lng.eng_dv.all_con.blog&utm_term=&creative=&device=c&placement=&gclid=CjwKCAiAlp2fBhBPEiwA2Q10D0IlNhWeNWcTRsje6gwcbLpoyzyDjmKD9qZvw20uzanEIOsj2aRktxoChqEQAvD_BwE
+
+smt são aplicadas para que possamos fazer modificações em tempo real antes de ser gravada no banco
+
+para fazer as transformações:
+
+transforms=extractValue
+
+### temos opção de extrair uma ky ou um value
+transforms.extractValue.type=org.apache.kafka.connect.transforms.ExtractField$Value 
+
+### o after é a parte do payload que contém o que queremos
+transforms.extractValue.field=after 
+
+depois de adicionarmos isso no properties, deletamos o banco do mongo expres, deletamos o sink do control center e damos o upload novamente no control center
+
+
+os transforms podem ser usados para incluir algo tbm
